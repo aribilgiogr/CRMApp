@@ -69,7 +69,7 @@ namespace Business.Services
             try
             {
                 var customers = await unitOfWork.CustomerRepository.FindManyAsync();
-                var customerDTOs = mapper.Map<IEnumerable<CustomerListDTO>>(customers);
+                var customerDTOs = mapper.Map<IEnumerable<CustomerListDTO>>(customers.ToList());
                 return new SuccessDataResult<IEnumerable<CustomerListDTO>>(customerDTOs, "Customers" + Messages.RetrievedSuffix);
             }
             catch (Exception ex)

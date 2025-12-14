@@ -31,12 +31,16 @@ namespace Business
             services.AddAutoMapper(config =>
             {
                 // Tüm profilleri otomatik olarak yükle
-                config.AddMaps(typeof(CustomerProfiles).Assembly);
+                config.AddMaps(typeof(CustomerProfiles));
             });
 
 
             // AddScoped metodu, belirli bir hizmetin yaşam süresini tanımlar. Scoped yaşam süresi, her istemci isteği için tek bir örnek oluşturur ve bu örnek, isteğin tamamı boyunca kullanılır.
             services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IOpportunityService, OpportunityService>();
+            services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<IContactService, ContactService>();
+            services.AddScoped<ILeadService, LeadService>();
 
             return services;
         }
