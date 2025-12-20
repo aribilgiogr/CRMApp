@@ -2,8 +2,10 @@
 using Business.Services;
 using Core.Abstracts;
 using Core.Abstracts.IServices;
+using Core.Concretes.Entities;
 using Data;
 using Data.Contexts;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,10 @@ namespace Business
         {
             // Veri tabanı ile ilgili bağımlılıkları burada ekleyin.
             services.AddDbContext<CrmDbContext>(options => options.UseSqlite(configuration.GetConnectionString("crmdb")));
+
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddEntityFrameworkStores<CrmDbContext>()
+                    .AddDefaultTokenProviders();
 
             // Diğer veri erişim bağımlılıklarını burada ekleyin. Ortak bir UnitOfWork sınıfı ekleyebilirsiniz.
             // UnitofWork sınıfı yapıcı parametre olarak CrmDbContext alır, bu sebeble önce DbContext eklenmelidir.

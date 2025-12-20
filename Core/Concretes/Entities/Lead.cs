@@ -20,7 +20,10 @@ namespace Core.Concretes.Entities
         public virtual Customer? ConvertedToCustomer { get; set; }
 
         public DateTime? ConvertedDate { get; set; }
+
+        [ForeignKey("AssignedSalesPerson")]
         public string? AssignedSalesPersonId { get; set; }
+        public virtual ApplicationUser? AssignedSalesPerson { get; set; }
 
         // Navigation Properties
         public virtual ICollection<Activity> Activities { get; set; } = [];

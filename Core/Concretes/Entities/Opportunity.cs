@@ -1,5 +1,6 @@
 ﻿using Core.Abstracts.Bases;
 using Core.Concretes.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Concretes.Entities
 {
@@ -15,7 +16,9 @@ namespace Core.Concretes.Entities
         public DateTime? ExpectedCloseDate { get; set; }
         public DateTime? ActualCloseDate { get; set; }
 
+        [ForeignKey("AssignedSalesPerson")]
         public string? AssignedSalesPersonId { get; set; }
+        public virtual ApplicationUser? AssignedSalesPerson { get; set; }
 
         public OpportunityStatus Status { get; set; }
         public OpportunityStage Stage { get; set; }

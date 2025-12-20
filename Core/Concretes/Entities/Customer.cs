@@ -1,5 +1,6 @@
 ﻿using Core.Abstracts.Bases;
 using Core.Concretes.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Concretes.Entities
 {
@@ -15,7 +16,10 @@ namespace Core.Concretes.Entities
         public string? Address { get; set; }
         public string? City { get; set; }
         public string? Country { get; set; }
+
+        [ForeignKey("AssignedSalesPerson")]
         public string? AssignedSalesPersonId { get; set; }
+        public virtual ApplicationUser? AssignedSalesPerson { get; set; }
         public required CustomerStatus Status { get; set; }
 
 

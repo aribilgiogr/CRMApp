@@ -1,9 +1,11 @@
 ﻿using Core.Concretes.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Contexts
 {
-    public class CrmDbContext : DbContext
+    public class CrmDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
         public CrmDbContext(DbContextOptions<CrmDbContext> options) : base(options)
         {

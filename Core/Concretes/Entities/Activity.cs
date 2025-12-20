@@ -2,6 +2,7 @@
 using Core.Concretes.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,7 +27,9 @@ namespace Core.Concretes.Entities
         public int? RelatedOpportunityId { get; set; }
         public virtual Opportunity? RelatedOpportunity { get; set; }
 
+        [ForeignKey("AssignedSalesPerson")]
         public string? AssignedSalesPersonId { get; set; }
+        public virtual ApplicationUser? AssignedSalesPerson { get; set; }
 
         public ActivityType Type { get; set; }
     }
