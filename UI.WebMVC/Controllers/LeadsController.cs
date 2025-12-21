@@ -1,8 +1,10 @@
 ﻿using Core.Abstracts.IServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace UI.WebMVC.Controllers
 {
+    [Authorize]
     public class LeadsController(ILeadService service) : Controller
     {
         public async Task<IActionResult> Index()

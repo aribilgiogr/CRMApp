@@ -38,10 +38,12 @@ namespace Business
             {
                 // Tüm profilleri otomatik olarak yükle
                 config.AddMaps(typeof(CustomerProfiles));
+                config.AddMaps(typeof(AccountProfiles));
+                config.AddMaps(typeof(LeadProfiles));
             });
 
 
-            // AddScoped metodu, belirli bir hizmetin yaşam süresini tanımlar. Scoped yaşam süresi, her istemci isteği için tek bir örnek oluşturur ve bu örnek, isteğin tamamı boyunca kullanılır.
+            // AddScoped metodu, belirli bir hizmetin yaşam süresini tanımlar. Scoped yaşam süresi, her istemci isteği için tek bir örnek oluşturur ve bu örnek, isteğin tamamı boyunca kullanılır. Prototype Design Pattern
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IOpportunityService, OpportunityService>();
             services.AddScoped<IActivityService, ActivityService>();
