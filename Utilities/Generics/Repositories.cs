@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Utilities.Generics
 {
@@ -16,8 +17,8 @@ namespace Utilities.Generics
 
         // Task<T> -> T gibi düşünülebilir. Yani geriye T tipinde bir değer döndürür.
         Task<TEntity?> FindByIdAsync(int id);
-        Task<TEntity?> FindFirstAsync(Func<TEntity, bool>? predicate = null, params string[] includes);
-        Task<IQueryable<TEntity>> FindManyAsync(Func<TEntity, bool>? predicate = null, params string[] includes);
+        Task<TEntity?> FindFirstAsync(Expression<Func<TEntity, bool>>? predicate = null, params string[] includes);
+        Task<IQueryable<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>>? predicate = null, params string[] includes);
 
         Task UpdateAsync(TEntity entity);
         Task UpdateManyAsync(IEnumerable<TEntity> entities);
@@ -25,8 +26,8 @@ namespace Utilities.Generics
         Task DeleteAsync(TEntity entity);
         Task DeleteManyAsync(IEnumerable<TEntity> entities);
 
-        Task<int> CountAsync(Func<TEntity, bool>? predicate = null);
-        Task<bool> AnyAsync(Func<TEntity, bool>? predicate = null);
+        Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null);
+        Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? predicate = null);
     }
 
     public abstract class Repository<TEntity> : IRepository<TEntity> where TEntity : class
@@ -43,18 +44,18 @@ namespace Utilities.Generics
         //predicate: Koşul belirlemek için kullanılan bir fonksiyon. Örneğin, belirli bir özelliğe sahip varlıkları filtrelemek için kullanılabilir. SQL tarafında WHERE koşuluna benzer.
         // Func<TEntity, bool>: TEntity tipinde bir girdi alır ve bool tipinde bir çıktı döndürür. Yani, bir varlığın belirli bir koşulu sağlayıp sağlamadığını kontrol etmek için kullanılır.
         // Şablonu: x => x.Property == value && x.OtherProperty > otherValue || ... gibi.
-        public async Task<bool> AnyAsync(Func<TEntity, bool>? predicate = null)
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>>? predicate = null)
         {
             return predicate == null
                 ? await _dbSet.AnyAsync()
-                : await _dbSet.AnyAsync(entity => predicate(entity));
+                : await _dbSet.AnyAsync(predicate);
         }
 
-        public async Task<int> CountAsync(Func<TEntity, bool>? predicate = null)
+        public async Task<int> CountAsync(Expression<Func<TEntity, bool>>? predicate = null)
         {
             return predicate == null
                 ? await _dbSet.CountAsync()
-                : await _dbSet.CountAsync(entity => predicate(entity));
+                : await _dbSet.CountAsync(predicate);
         }
 
         public async Task CreateAsync(TEntity entity)
@@ -83,9 +84,9 @@ namespace Utilities.Generics
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<TEntity?> FindFirstAsync(Func<TEntity, bool>? predicate = null, params string[] includes)
+        public async Task<TEntity?> FindFirstAsync(Expression<Func<TEntity, bool>>? predicate = null, params string[] includes)
         {
-            IQueryable<TEntity> query = predicate == null ? _dbSet : _dbSet.Where(entity => predicate(entity));
+            IQueryable<TEntity> query = predicate == null ? _dbSet : _dbSet.Where(predicate);
 
             foreach (var include in includes)
             {
@@ -95,9 +96,9 @@ namespace Utilities.Generics
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<IQueryable<TEntity>> FindManyAsync(Func<TEntity, bool>? predicate = null, params string[] includes)
+        public async Task<IQueryable<TEntity>> FindManyAsync(Expression<Func<TEntity, bool>>? predicate = null, params string[] includes)
         {
-            IQueryable<TEntity> query = predicate == null ? _dbSet : _dbSet.Where(entity => predicate(entity));
+            IQueryable<TEntity> query = predicate == null ? _dbSet : _dbSet.Where(predicate);
 
             foreach (var include in includes)
             {

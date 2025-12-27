@@ -42,7 +42,9 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input asp-for="Source" class="form-control bg-white" />
+                        <select asp-for="Source" class="form-select bg-white" asp-items="ViewBag.Sources">
+                            <option value="">Select Source</option>
+                        </select>
                         <label asp-for="Source" class="control-label"></label>
                         <span asp-validation-for="Source" class="text-danger"></span>
                     </div>

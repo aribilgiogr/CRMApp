@@ -9,6 +9,7 @@ namespace Business.Profiles
         public LeadProfiles()
         {
             CreateMap<Lead, LeadListDTO>();
+            CreateMap<LeadCreateDTO, Lead>();
         }
     }
 }

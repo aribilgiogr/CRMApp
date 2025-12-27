@@ -13,7 +13,7 @@ namespace Core.Concretes.Entities
         public LeadStatus Status { get; set; } = LeadStatus.New;
         public LeadSource Source { get; set; }
         public int Score { get; set; }
-        public string Notes { get; set; }
+        public string? Notes { get; set; }
 
         [ForeignKey("ConvertedToCustomer")]
         public int? ConvertedToCustomerId { get; set; }

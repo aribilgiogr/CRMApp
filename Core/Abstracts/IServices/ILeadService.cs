@@ -9,6 +9,7 @@ using Utilities.Results;
 namespace Core.Abstracts.IServices
 {
     public interface ILeadService {
-        Task<IDataResult<IEnumerable<LeadListDTO>>> GetAllAsync();
+        Task<IDataResult<IEnumerable<LeadListDTO>>> GetAllAsync(string? uid);
+        Task<IResult> AddLeadAsync(LeadCreateDTO model);
     }
 }

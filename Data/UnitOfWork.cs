@@ -30,7 +30,7 @@ namespace Data
             }
             catch (Exception ex)
             {
-                await DisposeAsync();
+                //await DisposeAsync();
                 throw new Exception("An error occurred while committing the transaction.", ex);
             }
         }
@@ -38,9 +38,6 @@ namespace Data
         public async ValueTask DisposeAsync()
         {
             await context.DisposeAsync();
-
-            //Garbage collection optimizasyonu, finalize metodunun çağrılmasını engeller.
-            GC.SuppressFinalize(this);
         }
     }
 }
