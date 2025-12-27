@@ -8,12 +8,15 @@
     <div class="col-12">
         <div class="bg-secondary rounded h-100 p-4">
             <ul class="nav justify-content-end">
-                <li class="nav-item">
-                    <a class="btn btn-primary mb-3 btn-sm" asp-action="create" asp-controller="leads">Add New Lead</a>
-                </li>
-                <li class="nav-item">
-                    <a class="btn btn-light mb-3 ms-2 btn-sm" asp-action="import" asp-controller="leads">Import Leads from File</a>
-                </li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="btn btn-primary mb-3 btn-sm" asp-action="create" asp-controller="leads">Add New Lead</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-light mb-3 ms-2 btn-sm" asp-action="import" asp-controller="leads">Import Leads from File</a>
+                    </li>
+                }
                 <li class="nav-item dropdown">
                     <a class="btn btn-info mb-3 ms-2 dropdown-toggle btn-sm" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Export Leads

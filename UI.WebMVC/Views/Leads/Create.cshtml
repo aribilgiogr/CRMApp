@@ -1,0 +1,72 @@
+﻿@model Core.Concretes.DTOs.LeadCreateDTO
+
+@{
+    ViewData["Title"] = "Add New Lead";
+}
+
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h5 class="mb-4">New Lead Form</h5>
+            <form asp-action="Create" class="row g-3">
+                <div class="col-12">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="FullName" class="form-control bg-white" />
+                        <label asp-for="FullName" class="control-label"></label>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="CompanyName" class="form-control bg-white" />
+                        <label asp-for="CompanyName" class="control-label"></label>
+                        <span asp-validation-for="CompanyName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input asp-for="Email" class="form-control bg-white" />
+                        <label asp-for="Email" class="control-label"></label>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input asp-for="Phone" class="form-control bg-white" />
+                        <label asp-for="Phone" class="control-label"></label>
+                        <span asp-validation-for="Phone" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input asp-for="Source" class="form-control bg-white" />
+                        <label asp-for="Source" class="control-label"></label>
+                        <span asp-validation-for="Source" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                        <textarea asp-for="Notes" class="form-control bg-white"></textarea>
+                        <label asp-for="Notes" class="control-label"></label>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

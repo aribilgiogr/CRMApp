@@ -19,5 +19,9 @@ namespace UI.WebMVC.Controllers
                 return Problem(model.Message);
             }
         }
+
+        public IActionResult Create() { 
+            return View();
+        }
     }
 }

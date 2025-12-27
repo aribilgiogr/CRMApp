@@ -50,6 +50,7 @@ namespace Business
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<ILeadService, LeadService>();
 
+            services.AddScoped<IAccountService, AccountService>();
             return services;
         }
     }
