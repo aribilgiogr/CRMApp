@@ -1,9 +1,5 @@
 ﻿using Core.Concretes.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Utilities.Results;
 
 namespace Core.Abstracts.IServices
@@ -11,5 +7,7 @@ namespace Core.Abstracts.IServices
     public interface ILeadService {
         Task<IDataResult<IEnumerable<LeadListDTO>>> GetAllAsync(string? uid);
         Task<IResult> AddLeadAsync(LeadCreateDTO model);
+
+        Task<IResult> ImportLeadsAsync(IFormFile file, string ext);
     }
 }

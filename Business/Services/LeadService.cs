@@ -3,6 +3,7 @@ using Core.Abstracts;
 using Core.Abstracts.IServices;
 using Core.Concretes.DTOs;
 using Core.Concretes.Entities;
+using Microsoft.AspNetCore.Http;
 using Utilities.Constants;
 using Utilities.Results;
 
@@ -36,6 +37,42 @@ namespace Business.Services
             catch (Exception ex)
             {
                 return new ErrorDataResult<IEnumerable<LeadListDTO>>(Messages.ErrorOccurred + ": " + ex.Message);
+            }
+        }
+
+        private Task<IDataResult<IEnumerable<Lead>>> importCsvAsync(StreamReader? reader) => default;
+        private Task<IDataResult<IEnumerable<Lead>>> importJsonAsync(StreamReader? reader) => default;
+        private Task<IDataResult<IEnumerable<Lead>>> importExcelAsync(StreamReader? reader) => default;
+
+        public async Task<IResult> ImportLeadsAsync(IFormFile file, string ext)
+        {
+            try
+            {
+                using var stream = file.OpenReadStream();
+                using var reader = new StreamReader(stream);
+
+                var result = ext switch
+                {
+                    ".csv" => await importCsvAsync(reader),
+                    ".json" => await importJsonAsync(reader),
+                    ".xlsx" => await importExcelAsync(reader),
+                    _ => new ErrorDataResult<IEnumerable<Lead>>("Just .csv, .xlsx, .json allowed!")
+                };
+
+                if (result.Success)
+                {
+                    await unitOfWork.LeadRepository.CreateManyAsync(result.Data);
+                    await unitOfWork.CommitAsync();
+                    return new SuccessResult(result.Message);
+                }
+                else
+                {
+                    return new ErrorResult(result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResult(ex.Message);
             }
         }
     }

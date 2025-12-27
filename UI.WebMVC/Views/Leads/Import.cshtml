@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Import";
+}
+<div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+        <div class="bg-secondary rounded h-100 p-4">
+            <h5 class="mb-4">Import Leads From File</h5>
+            <form asp-action="import" class="row g-3" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <div class="col-12">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <input class="form-control" type="file" id="file" name="file" accept=".csv,.json,.xlsx" required />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <input type="submit" value="Upload" class="btn btn-primary" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
