@@ -14,6 +14,8 @@ namespace Core.Concretes.DTOs
         public string Source { get; set; } = null!;
         public int Score { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string? AssignedSalesPersonId { get; set; }
+        public string? AssignedSalesPersonFullName { get; set; }
     }
 
     public class LeadCreateDTO

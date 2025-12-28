@@ -13,6 +13,7 @@ using System.Linq;
 using Utilities.Extensions;
 using System.Text.Json;
 using MiniExcelLibs;
+using System.Text.Json.Serialization;
 
 namespace Business.Services
 {
@@ -37,7 +38,15 @@ namespace Business.Services
         {
             try
             {
-                var leads = await unitOfWork.LeadRepository.FindManyAsync(x => string.IsNullOrEmpty(uid) || x.AssignedSalesPersonId == uid);
+                IEnumerable<Lead> leads;
+                if (string.IsNullOrEmpty(uid))
+                {
+                    leads = await unitOfWork.LeadRepository.FindManyAsync();
+                }
+                else
+                {
+                    leads = await unitOfWork.LeadRepository.FindManyAsync(x => x.AssignedSalesPersonId == uid || x.AssignedSalesPersonId == null);
+                }
                 var leadDTOs = mapper.Map<IEnumerable<LeadListDTO>>(leads);
                 return new SuccessDataResult<IEnumerable<LeadListDTO>>(leadDTOs, "Leads" + Messages.RetrievedSuffix);
             }
@@ -47,49 +56,53 @@ namespace Business.Services
             }
         }
 
-        private async Task<IDataResult<IEnumerable<Lead>>> importCsvAsync(StreamReader reader)
+        private async Task<IDataResult<IEnumerable<LeadCreateDTO>>> importCsvAsync(StreamReader reader)
         {
             try
             {
                 using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture));
-                var records = await csv.GetRecordsAsync<Lead>().ToEnumerableAsync();
-                return new SuccessDataResult<IEnumerable<Lead>>(records, "Import success.");
+                var records = await csv.GetRecordsAsync<LeadCreateDTO>().ToEnumerableAsync();
+                return new SuccessDataResult<IEnumerable<LeadCreateDTO>>(records, "Import success.");
             }
             catch (Exception ex)
             {
-                return new ErrorDataResult<IEnumerable<Lead>>("Import failed. " + ex.Message);
+                return new ErrorDataResult<IEnumerable<LeadCreateDTO>>("Import failed. " + ex.Message);
             }
         }
-        private async Task<IDataResult<IEnumerable<Lead>>> importJsonAsync(Stream stream)
+        private async Task<IDataResult<IEnumerable<LeadCreateDTO>>> importJsonAsync(Stream stream)
         {
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, };
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                Converters = { new JsonStringEnumConverter() }
+            };
             try
             {
-                var data = await JsonSerializer.DeserializeAsync<IEnumerable<Lead>>(stream, options);
+                var data = await JsonSerializer.DeserializeAsync<IEnumerable<LeadCreateDTO>>(stream, options);
                 if (data == null)
                 {
-                    return new ErrorDataResult<IEnumerable<Lead>>("Import failed.");
+                    return new ErrorDataResult<IEnumerable<LeadCreateDTO>>("Import failed.");
                 }
                 else
                 {
-                    return new SuccessDataResult<IEnumerable<Lead>>(data, "Import success.");
+                    return new SuccessDataResult<IEnumerable<LeadCreateDTO>>(data, "Import success.");
                 }
             }
             catch (Exception ex)
             {
-                return new ErrorDataResult<IEnumerable<Lead>>("Import failed. " + ex.Message);
+                return new ErrorDataResult<IEnumerable<LeadCreateDTO>>("Import failed. " + ex.Message);
             }
         }
-        private async Task<IDataResult<IEnumerable<Lead>>> importExcelAsync(Stream stream)
+        private async Task<IDataResult<IEnumerable<LeadCreateDTO>>> importExcelAsync(Stream stream)
         {
             try
             {
-                var data = await stream.QueryAsync<Lead>();
-                return new SuccessDataResult<IEnumerable<Lead>>(data, "Import success.");
+                var data = await stream.QueryAsync<LeadCreateDTO>();
+                return new SuccessDataResult<IEnumerable<LeadCreateDTO>>(data, "Import success.");
             }
             catch (Exception ex)
             {
-                return new ErrorDataResult<IEnumerable<Lead>>("Import failed. " + ex.Message);
+                return new ErrorDataResult<IEnumerable<LeadCreateDTO>>("Import failed. " + ex.Message);
             }
         }
 
@@ -102,7 +115,7 @@ namespace Business.Services
 
                 if (reader == null)
                 {
-                    return new ErrorDataResult<IEnumerable<Lead>>("File corrupt!");
+                    return new ErrorResult("File corrupt!");
                 }
 
                 var result = ext switch
@@ -110,12 +123,13 @@ namespace Business.Services
                     ".csv" => await importCsvAsync(reader),
                     ".json" => await importJsonAsync(stream),
                     ".xlsx" => await importExcelAsync(stream),
-                    _ => new ErrorDataResult<IEnumerable<Lead>>("Just .csv, .xlsx, .json allowed!")
+                    _ => new ErrorDataResult<IEnumerable<LeadCreateDTO>>("Just .csv, .xlsx, .json allowed!")
                 };
 
                 if (result.Success)
                 {
-                    await unitOfWork.LeadRepository.CreateManyAsync(result.Data);
+                    var leads = mapper.Map<IEnumerable<Lead>>(result.Data);
+                    await unitOfWork.LeadRepository.CreateManyAsync(leads);
                     await unitOfWork.CommitAsync();
                     return new SuccessResult(result.Message);
                 }
@@ -127,6 +141,30 @@ namespace Business.Services
             catch (Exception ex)
             {
                 return new ErrorResult(ex.Message);
+            }
+        }
+
+        public async Task<IResult> AssignLeadToSalesPersonAsync(string userId, int leadId)
+        {
+            try
+            {
+                var lead = await unitOfWork.LeadRepository.FindByIdAsync(leadId);
+                if (lead != null)
+                {
+                    lead.AssignedSalesPersonId = userId;
+                    await unitOfWork.LeadRepository.UpdateAsync(lead);
+                    await unitOfWork.CommitAsync();
+                    return new SuccessResult("Lead" + Messages.UpdatedSuffix);
+                }
+                else
+                {
+                    return new ErrorResult("Lead" + Messages.NotFoundSuffix);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResult(Messages.ErrorOccurred + ": " + ex.Message);
             }
         }
     }

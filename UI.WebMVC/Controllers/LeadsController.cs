@@ -79,5 +79,25 @@ namespace UI.WebMVC.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> PickLead(int id)
+        {
+            try
+            {
+                var result = await service.AssignLeadToSalesPersonAsync(User.FindFirstValue(ClaimTypes.NameIdentifier), id);
+                if (result.Success)
+                {
+                    return RedirectToAction("index", "leads");
+                }
+                else
+                {
+                    return Problem(result.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }

@@ -4,6 +4,15 @@
     ViewData["Title"] = "Lead List";
 }
 
+@section Scripts {
+    <partial name="_DataTablesScripts" />
+    <script src="~/js/leadDataTable.js"></script>
+}
+
+@section Styles {
+    <partial name="_DataTablesStyles" />
+}
+
 <div class="row">
     <div class="col-12">
         <div class="bg-secondary rounded h-100 p-4">
@@ -30,9 +39,10 @@
             </ul>
             <h6 class="mb-4">Lead List</h6>
             <div class="table-responsive">
-                <table class="table">
+                <table class="table" id="leads">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>
                                 @Html.DisplayNameFor(model => model.Id)
                             </th>
@@ -54,19 +64,14 @@
                             <th>
                                 @Html.DisplayNameFor(model => model.Source)
                             </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.Score)
-                            </th>
-                            <th>
-                                @Html.DisplayNameFor(model => model.CreatedDate)
-                            </th>
-                            <th></th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            <tr>
+                            <tr class="@(item.AssignedSalesPersonId != null ? "text-success" : "")">
+                                <td></td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Id)
                                 </td>
@@ -89,15 +94,14 @@
                                     @Html.DisplayFor(modelItem => item.Source)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Score)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.CreatedDate)
-                                </td>
-                                <td>
-                                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                                    @if (item.AssignedSalesPersonId == null && !User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="pickLead" asp-controller="leads" asp-route-id="@item.Id">Pick</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="addActivityLead" asp-controller="leads" asp-route-id="@item.Id">Add Activity</a>
+                                    }
                                 </td>
                             </tr>
                         }
