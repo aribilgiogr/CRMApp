@@ -8,8 +8,8 @@ namespace Core.Concretes.Entities
     {
         public string FullName { get; set; } = null!;
         public string? CompanyName { get; set; }
-        public required string Email { get; set; }
-        public required string Phone { get; set; }
+        public string Email { get; set; } = null!;
+        public string Phone { get; set; } = null!;
         public LeadStatus Status { get; set; } = LeadStatus.New;
         public LeadSource Source { get; set; }
         public int Score { get; set; }
