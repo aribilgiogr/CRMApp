@@ -20,10 +20,25 @@ namespace Business.Services
                 if (existingCustomer)
                     return new ErrorResult(Messages.EmailAlreadyExists);
 
+                // Customer oluşturma
                 var customer = mapper.Map<Customer>(dto);
-
                 await unitOfWork.CustomerRepository.CreateAsync(customer);
+
+                // Değişiklikleri kaydetme
                 await unitOfWork.CommitAsync();
+
+                // İlgili lead'in durumunu güncelleme
+                var lead = await unitOfWork.LeadRepository.FindByIdAsync(dto.LeadId);
+                if (lead != null)
+                {
+                    lead.Status = LeadStatus.Converted;
+                    lead.ConvertedToCustomerId = customer.Id;
+                    lead.ConvertedDate = DateTime.Now;
+                    await unitOfWork.LeadRepository.UpdateAsync(lead);
+                    await unitOfWork.CommitAsync();
+                }
+
+
                 return new SuccessResult("Customer" + Messages.AddedSuffix);
             }
             catch (Exception ex)

@@ -6,6 +6,8 @@ namespace Core.Concretes.DTOs
     public class CreateCustomerDTO
     {
         [Required]
+        public int LeadId { get; set; }
+        [Required]
         public string CompanyName { get; set; } = null!;
         public string? TaxNumber { get; set; }
         public string? Industry { get; set; }

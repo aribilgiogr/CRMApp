@@ -22,6 +22,7 @@ namespace Business.Profiles
         public ActivityProfiles()
         {
             CreateMap<Activity, ActivityListDTO>().ForMember(dest => dest.AssignedSalesPersonName, opt => opt.MapFrom(src => src.AssignedSalesPerson != null ? $"{src.AssignedSalesPerson.FirstName} {src.AssignedSalesPerson.LastName}" : null));
+            CreateMap<ActivityCreateDTO, Activity>();
         }
     }
 }

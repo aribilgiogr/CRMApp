@@ -2,9 +2,8 @@
 async function format(id) {
     const url = `/activities/lead/${id}`
     const res = await fetch(url, { method: 'POST', headers: { "content-type": 'application/json' } })
-
     let t = `
-    <table class="table">
+    <table class="table text-dark bg-white table-bordered table-striped">
         <tr>
             <th>Type</th>
             <th>Subject</th>
@@ -17,20 +16,21 @@ async function format(id) {
 
     if (res.ok) {
         const result = await res.json()
-        if (result.success) {
-            console.log(result.data)
+        if (result.success && result.data.length > 0) {
             result.data.forEach(item => {
                 t += `
                 <tr>
-                    <td>${item["Type"]}</td>
-                    <td>${item["Subject"]}</td>
-                    <td>${item["Description"]}</td>
-                    <td>${item["DueDate"]}</td>
-                    <td>${item["CompletedDate"]}</td>
-                    <td>${item["IsCompleted"]}</td>
-                    <td>${item["AssignedSalesPersonName"]}</td>
+                    <td>${item["type"]}</td>
+                    <td>${item["subject"]}</td>
+                    <td>${item["description"]}</td>
+                    <td>${item["dueDate"]}</td>
+                    <td>${item["completedDate"]}</td>
+                    <td>${item["isCompleted"]}</td>
+                    <td>${item["assignedSalesPersonName"]}</td>
                 </tr>`
             })
+        } else {
+            return ''
         }
     }
 
@@ -70,6 +70,13 @@ table.on('click', 'tbody td.dt-control', function (e) {
     }
     else {
         // Open this row
-        row.child(format(row.data().Id)).show();
+        format(row.data().Id)
+            .then(t => {
+                if (t !== '') {
+                    row.child(t).show()
+                } else {
+                    row.child("").hide();
+                }
+            })
     }
 });

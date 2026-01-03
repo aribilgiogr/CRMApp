@@ -167,5 +167,26 @@ namespace Business.Services
                 return new ErrorResult(Messages.ErrorOccurred + ": " + ex.Message);
             }
         }
+
+        public async Task<IDataResult<LeadListDTO>> GetAsync(int id)
+        {
+            try
+            {
+                var lead = await unitOfWork.LeadRepository.FindByIdAsync(id);
+                if (lead != null)
+                {
+                    var leadDTO = mapper.Map<LeadListDTO>(lead);
+                    return new SuccessDataResult<LeadListDTO>(leadDTO, "Lead" + Messages.RetrievedSuffix);
+                }
+                else
+                {
+                    return new ErrorDataResult<LeadListDTO>("Lead" + Messages.NotFoundSuffix);
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ErrorDataResult<LeadListDTO>(Messages.ErrorOccurred + ": " + ex.Message);
+            }
+        }
     }
 }

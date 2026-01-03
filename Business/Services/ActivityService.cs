@@ -10,6 +10,54 @@ namespace Business.Services
 {
     public class ActivityService(IUnitOfWork unitOfWork, IMapper mapper) : IActivityService
     {
+        public async Task<IResult> AddActivityToCustomerAsync(ActivityCreateDTO model)
+        {
+            try
+            {
+                var activity = mapper.Map<Activity>(model);
+                activity.RelatedCustomerId = model.RelatedId;
+                await unitOfWork.ActivityRepository.CreateAsync(activity);
+                await unitOfWork.CommitAsync();
+                return new SuccessResult("Activity" + Messages.AddedSuffix);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResult(Messages.ErrorOccurred + " - " + ex.Message);
+            }
+        }
+
+        public async Task<IResult> AddActivityToLeadAsync(ActivityCreateDTO model)
+        {
+            try
+            {
+                var activity = mapper.Map<Activity>(model);
+                activity.RelatedLeadId = model.RelatedId;
+                await unitOfWork.ActivityRepository.CreateAsync(activity);
+                await unitOfWork.CommitAsync();
+                return new SuccessResult("Activity" + Messages.AddedSuffix);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResult(Messages.ErrorOccurred + " - " + ex.Message);
+            }
+        }
+
+        public async Task<IResult> AddActivityToOpportunityAsync(ActivityCreateDTO model)
+        {
+            try
+            {
+                var activity = mapper.Map<Activity>(model);
+                activity.RelatedOpportunityId = model.RelatedId;
+                await unitOfWork.ActivityRepository.CreateAsync(activity);
+                await unitOfWork.CommitAsync();
+                return new SuccessResult("Activity" + Messages.AddedSuffix);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResult(Messages.ErrorOccurred + " - " + ex.Message);
+            }
+        }
+
         public async Task<IDataResult<IEnumerable<ActivityListDTO>>> GetActivitiesByCustomerId(int customerId)
         {
             try
@@ -51,5 +99,7 @@ namespace Business.Services
                 return new ErrorDataResult<IEnumerable<ActivityListDTO>>(Messages.ErrorOccurred + " - " + ex.Message);
             }
         }
+
+
     }
 }

@@ -5,8 +5,10 @@ using Utilities.Results;
 
 namespace Core.Abstracts.IServices
 {
-    public interface ILeadService {
+    public interface ILeadService
+    {
         Task<IDataResult<IEnumerable<LeadListDTO>>> GetAllAsync(string? uid);
+        Task<IDataResult<LeadListDTO>> GetAsync(int id);
         Task<IResult> AddLeadAsync(LeadCreateDTO model);
 
         Task<IResult> ImportLeadsAsync(IFormFile file, string ext);

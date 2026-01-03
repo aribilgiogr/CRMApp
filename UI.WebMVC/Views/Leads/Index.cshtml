@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Core.Concretes.DTOs.LeadListDTO>
+﻿@using Core.Concretes.Enums
+@model IEnumerable<Core.Concretes.DTOs.LeadListDTO>
 
 @{
     ViewData["Title"] = "Lead List";
@@ -98,7 +99,7 @@
                                     {
                                         <a asp-action="pickLead" asp-controller="leads" asp-route-id="@item.Id">Pick</a>
                                     }
-                                    else
+                                    else if (item.Status != LeadStatus.Converted.ToString())
                                     {
                                         <button type="button" class="btn btn-primary"
                                                 data-bs-toggle="modal"
@@ -106,6 +107,7 @@
                                                 data-related-id="@item.Id">
                                             Add Activity
                                         </button>
+                                        <a asp-action="converttocustomer" asp-route-leadid="@item.Id" class="btn btn-secondary">Convert To Customer</a>
                                     }
                                 </td>
                             </tr>
