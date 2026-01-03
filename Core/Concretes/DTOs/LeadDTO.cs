@@ -3,6 +3,25 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Core.Concretes.DTOs
 {
+    public class LeadFilterDTO
+    {
+        // Result Data
+        public IEnumerable<LeadListDTO> FilteredData { get; set; } = [];
+
+        // Filter:
+        public string? Status { get; set; }
+        public string? Source { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public string? SearchTerm { get; set; }
+
+        // Pagination:
+        public int CurrentPage { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
+        public int Total => FilteredData.Count();
+        public int TotalPage => (int)Math.Ceiling((double)Total / PageSize);
+    }
+
     public class LeadListDTO
     {
         public int Id { get; set; }
@@ -38,4 +57,6 @@ namespace Core.Concretes.DTOs
         [Display(Name = "Additional Notes", Prompt = "Additional Notes"), DataType(DataType.MultilineText)]
         public string? Notes { get; set; }
     }
+
+
 }

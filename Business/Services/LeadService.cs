@@ -93,11 +93,11 @@ namespace Business.Services
                 return new ErrorDataResult<IEnumerable<LeadCreateDTO>>("Import failed. " + ex.Message);
             }
         }
-        private async Task<IDataResult<IEnumerable<LeadCreateDTO>>> importExcelAsync(Stream stream)
+        private async Task<IDataResult<IEnumerable<LeadCreateDTO>>> importExcelAsync(Stream stream, string? sheetName = null, string startCell = "A1")
         {
             try
             {
-                var data = await stream.QueryAsync<LeadCreateDTO>();
+                var data = await stream.QueryAsync<LeadCreateDTO>(sheetName: sheetName, startCell: startCell);
                 return new SuccessDataResult<IEnumerable<LeadCreateDTO>>(data, "Import success.");
             }
             catch (Exception ex)

@@ -1,0 +1,81 @@
+﻿@using Core.Concretes.Enums
+@model ActivityCreateDTO
+
+<div class="modal fade" id="activityModal" tabindex="-1" aria-labelledby="activityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="activityModalLabel">Yeni Aktivite Oluştur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="AddActivity" method="post" id="activityForm">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Type" class="form-label">Aktivite Tipi</label>
+                            <select asp-for="Type" class="form-select" asp-items="Html.GetEnumSelectList<ActivityType>()">
+                                <option value="">Seçiniz...</option>
+                            </select>
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DueDate" class="form-label">Bitiş Tarihi</label>
+                            <input asp-for="DueDate" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="DueDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Subject" class="form-label">Konu</label>
+                        <input asp-for="Subject" type="text" class="form-control" placeholder="Aktivite konusunu giriniz" />
+                        <span asp-validation-for="Subject" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Açıklama</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Detaylı açıklama (opsiyonel)"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <input asp-for="RelatedId" type="hidden" />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            $('#activityForm').on('submit', function(e) {
+                e.preventDefault();
+
+                if ($(this).valid()) {
+                    $.ajax({
+                        url: $(this).attr('action'),
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        success: function(response) {
+                            $('#activityModal').modal('hide');
+                            // Başarılı mesajı göster
+                            toastr.success('Aktivite başarıyla oluşturuldu');
+                            // Sayfayı yenile veya listeyi güncelle
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            toastr.error('Bir hata oluştu');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

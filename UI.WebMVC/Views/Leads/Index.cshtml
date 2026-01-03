@@ -100,13 +100,19 @@
                                     }
                                     else
                                     {
-                                        <a asp-action="addActivityLead" asp-controller="leads" asp-route-id="@item.Id">Add Activity</a>
+                                        <button type="button" class="btn btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#activityModal"
+                                                data-related-id="@item.Id">
+                                            Add Activity
+                                        </button>
                                     }
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
+                <partial name="_AddActivityPartial" model="new ActivityCreateDTO()" />
             </div>
         </div>
     </div>
